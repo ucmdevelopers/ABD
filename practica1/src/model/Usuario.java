@@ -3,7 +3,7 @@ package model;
 //import java.math.BigInteger;
 //import java.sql.Date;Depricated!!! casi entera
 
-public abstract class Usuario {
+public class Usuario {
 	private String id_user;
 	private String passwd;
 	
@@ -13,13 +13,13 @@ public Usuario(){
 		this.passwd=null;
 		
 	}
-	public Usuario(String id_user, String nombre, String passwd) {
+	public Usuario(String id_user, String passwd) {
 		super();
 		this.id_user = id_user;
 		this.passwd = passwd;
 		
 	}
-
+	
 	
 	
 	public String getId_user() {

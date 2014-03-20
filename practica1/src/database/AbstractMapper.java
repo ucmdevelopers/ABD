@@ -198,10 +198,10 @@ public abstract class AbstractMapper <T,K> {
 	
 	//--------Privadas(estas en concreto se podría prescindir, aportan claridad a las genericas)	
 	private String UpdateStat(T obj){
-		return "Update"+getTableName()+"Set"+pharseUpdate(obj);
+		return "Update "+getTableName()+" Set "+pharseUpdate(obj);
 	}
 	private String InsertStat(T obj){
-		return "Insert into"+getTableName()+pharseInsert(obj);
+		return "Insert into "+getTableName()+pharseInsert(obj);
 	}
 	
 	//-----abstrarctas (se implementan dentro de cada mapper que hereda)

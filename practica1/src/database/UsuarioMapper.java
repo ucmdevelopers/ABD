@@ -1,23 +1,14 @@
 package database;
 
-//import java.math.BigInteger;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
-import model.UserKeys;
 import model.Usuario;
 
-
-
-
-
-//-----para pruebas main
-import java.sql.*;
+//Imports para pruebas en main
+import javax.sql.DataSource;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 //---
-public class UsuarioMapper extends AbstractMapper<Usuario,UserKeys>{
+public class UsuarioMapper extends AbstractMapper<Usuario,String>{//UserKeys
 
 	private Usuario usr; 
 
@@ -63,17 +54,17 @@ public class UsuarioMapper extends AbstractMapper<Usuario,UserKeys>{
 	
 	@Override
 	public String pharseUpdate(Usuario obj) {
-		String str =  "passwd"+"="+obj.getPasswd()+" where "+" nick"+" = "+obj.getId_user();
+		String str =  "passwd"+"="+ "'"+obj.getPasswd()+"'"+" where "+" nick"+" = "+"'"+obj.getId_user()+"'";
 		return str;
 	}
 	@Override
 	public String pharseInsert(Usuario obj) {
-		String str = "(nick , passwd)" + " value " + " ( " +obj.getId_user() + " , " + obj.getPasswd()  + " )";
+		String str = " (nick , passwd)" + " values " + " ( " + "'"+obj.getId_user()+"'" + " , " + "'"+obj.getPasswd()+"'"  + " )";
 		return str;
 	}
 	@Override
-	public String pharseDelete(UserKeys id) {
-		String str ="nick "+ "="+id ;
+	public String pharseDelete(String id) {
+		String str ="nick"+ "="+ "'"+id+"'" ;
 		return str;
 	}
 	
@@ -81,13 +72,13 @@ public class UsuarioMapper extends AbstractMapper<Usuario,UserKeys>{
 	
 	//No se necesitan estos metodos en está clase por eso no se implementan
 	@Override
-	protected UserKeys getKey(Usuario obj) {
+	protected String getKey(Usuario obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
-	protected Object[] serializeKey(UserKeys key) {
+	protected Object[] serializeKey(String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -95,25 +86,34 @@ public class UsuarioMapper extends AbstractMapper<Usuario,UserKeys>{
 	 public static void main(String args[])
 		        throws Exception
 		    {
-		//The DataSource interface as an alternative to the DriverManager for establishing a connection with a data source
-		 		//Accessing driver
-		 		Class.forName("com.mysql.jdbc.Driver");
-		 		//creating a variable for the connection
-		 		//Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/practica11","root","");
-		 		//Connection con = DataSource.getConnection("jdbc:mysql://localhost:3306/practica11","root","");
-		 		
-		 		//DataSource data= 
-		 		//UsuarioMapper s= new UsuarioMapper(); 
-		 		/*PreparedStatement statement = con.prepareStatement("select * from usuarios");
-		 		ResultSet result = statement.executeQuery();
-		 		while(result.next())
-		 		{
-		 			System.out.println(result.getString(1)+""+result.getString(2));
-		 		}*/
-		    
-		    
-		    
-		    
+		 
+		 //creamos y configuramos un objeto data source:
+		 MysqlDataSource mysqlDataSource = new MysqlDataSource();
+		 mysqlDataSource.setServerName("localhost");
+		 mysqlDataSource.setDatabaseName("practica11");
+		 mysqlDataSource.setPort(3306);
+		 mysqlDataSource.setUser("root");
+		 mysqlDataSource.setPassword("");
+		 //establecemos la conexión con la BBDD, esto ya se hace dentro de cada una de las funciones antes listadas por eso prescindimos
+		 //Connection con = mysqlDataSource .getConnection();
+		
+		 //creamos un usuarioMapper, pasandole un objeto DataSource
+		 UsuarioMapper mapUsr = new UsuarioMapper( mysqlDataSource);
+		
+		 
+		 //Ejemplo Insert
+		 //Usuario us=new Usuario("Thor","maler12");
+		// mapUsr.Insert(us);	
+		 
+		
+		 //Ejemplo Update
+		 Usuario uss=new Usuario("Thor","98756");
+		 mapUsr.update(uss);
+		 
+		  //Ejemplos Delete
+		  // mapUsr.Delete("paulos") ;
+		  // mapUsr.Delete("Mark") ;
+		
 		    }
 	
 
