@@ -1,11 +1,20 @@
 package database;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import model.Usuario;
+
+
+
+
+
+
 
 //Imports para pruebas en main
 import javax.sql.DataSource;
+
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 //---
 public class UsuarioMapper extends AbstractMapper<Usuario,String>{//UserKeys
@@ -32,8 +41,8 @@ public class UsuarioMapper extends AbstractMapper<Usuario,String>{//UserKeys
 	@Override
 	protected Usuario buildObject(ResultSet rs) throws SQLException {
 		// TODO Auto-generated method stub
-		 Usuario result = null;
-		 result.setId_user(rs.getString("id_user"));
+		 Usuario result = new Usuario();
+		 result.setId_user(rs.getString("nick"));
 		 result.setPasswd(rs.getString("passwd"));
 		return result;
 	}
@@ -44,30 +53,34 @@ public class UsuarioMapper extends AbstractMapper<Usuario,String>{//UserKeys
 		
 		return new Object[] {object.getId_user(),object.getPasswd()};
 	}
-
+	
 	@Override
 	protected String[] getColumnNames() {
 		// TODO Auto-generated method stub
 		 	return new String[]{"nick", "passwd", "fecha_nac", "img"};
 	}
 
-	
 	@Override
-	public String pharseUpdate(Usuario obj) {
-		String str =  "passwd"+"="+ "'"+obj.getPasswd()+"'"+" where "+" nick"+" = "+"'"+obj.getId_user()+"'";
+	protected String pharseUpdate() {
+		//column1=value1,column2=value2,...+WHERE some_column=some_value solo rellenamos por ahora nick y passwd, aunque sea nuestra clave el nick, el usuario no lo podra modificar asi que lo machacamos, volvemos a escribirlo.
+		String colNam[] = getColumnNames();
+		String str = colNam[0]+"= ? ,"+colNam[1]+"= ?  where "+colNam[0]+"= ? ";
+		
+		return str;
+	}
+
+	@Override
+	protected String pharseInsert() {
+		String colNam[] = getColumnNames();//","+colNam[2]+","+colNam[3]
+		String str = " ("+colNam[0]+","+colNam[1]+")"+ " values " + " ( ?  , ?  ) ";//" ( " + " ? ," + " ? ,"  +" ? ,"  +" ?  "  + " )", no se puede insertar si no se rellena todos los ?
 		return str;
 	}
 	@Override
-	public String pharseInsert(Usuario obj) {
-		String str = " (nick , passwd)" + " values " + " ( " + "'"+obj.getId_user()+"'" + " , " + "'"+obj.getPasswd()+"'"  + " )";
-		return str;
+	protected String[] getKeyColumnNames() {
+		// TODO Auto-generated method stub
+		String[] keyCol={"nick"};
+		return keyCol;
 	}
-	@Override
-	public String pharseDelete(String id) {
-		String str ="nick"+ "="+ "'"+id+"'" ;
-		return str;
-	}
-	
 	
 	
 	//No se necesitan estos metodos en está clase por eso no se implementan
@@ -80,7 +93,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario,String>{//UserKeys
 	@Override
 	protected Object[] serializeKey(String key) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Object[] { key };
 	}
 	
 	 public static void main(String args[])
@@ -102,19 +115,49 @@ public class UsuarioMapper extends AbstractMapper<Usuario,String>{//UserKeys
 		
 		 
 		 //Ejemplo Insert
-		 //Usuario us=new Usuario("Thor","maler12");
+		// Usuario us=new Usuario("Magnus","stoisto");//el usuario ya hecho que le pasa el controller con los datos a la ultima
 		// mapUsr.Insert(us);	
 		 
 		
 		 //Ejemplo Update
-		 Usuario uss=new Usuario("Thor","98756");
+		 Usuario uss=new Usuario("Mark","GoreGora");
 		 mapUsr.update(uss);
 		 
 		  //Ejemplos Delete
-		  // mapUsr.Delete("paulos") ;
+		  // mapUsr.Delete("Thor") ;
 		  // mapUsr.Delete("Mark") ;
+		 
+		 //Ejemplos select
+		// Usuario sr = new Usuario();
+		// sr = mapUsr.findById("Mark");
 		
+		 //System.out.println(mapUsr.pharseInsert());
 		    }
+
+	 
+	 @Override
+	protected void fill(PreparedStatement pst, Usuario obj,boolean ins) {
+		//el objeto que ya recibe ha de ser con todo actualizado, si es insert o modifica los datos han de ser los ultimos, se basa en "machacar" todo lo anterior
+		try {
+			pst.setString(1, obj.getId_user());//? de nick
+			pst.setString(2,obj.getPasswd());// ? de passwd
+			if(!ins){//si es update necesitamos rellenar la condicion where con el nick .
+				pst.setString(3, obj.getId_user());
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+
+	
+
+	
 	
 
 	
