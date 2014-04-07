@@ -7,7 +7,7 @@ public class QueryConditions {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return super.toString();
+		return clave+operator.toString()+'?';
 	}
 	private Object valor;
 	public QueryConditions(String clave, Operator operator, Object valor) {
