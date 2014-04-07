@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="practica1/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/pc45/Desktop/bibliotecas--JAVA--ABD/commons-lang3-3.3/commons-lang3-3.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pc45/Desktop/bibliotecas--JAVA--ABD/mysql-connector-java-5.1.29/mysql-connector-java-5.1.29-bin.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
